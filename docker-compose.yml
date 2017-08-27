@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - 15672:15672
+
+  recollect:
+    image: node:6
+    working_dir: /usr/src/app
+    volumes:
+      - .:/usr/src/app
+    command: npm start --silent
