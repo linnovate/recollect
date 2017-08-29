@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  elasticsearch: 
+    image: elasticsearch:latest
+    ports:
+      - 9200:9200
+      - 9300:9300
+    volumes:
+      - /usr/share/elasticsearch/data:/docker/elasticsearch/data
+    command: elasticsearch
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - 15672:15672
+
+  logstash-provider:
+    image: logstash:latest
+    # restart: always
+    volumes:
+      - ./config/provider.conf:/etc/logstash/conf.d/provider.conf
+    # ports:
+    #   - "5044:5044"
+    command: -f /etc/logstash/conf.d/provider.conf
+    depends_on:
+      - rabbitmq
+
+  logstash-consumer:
+    image: madsen/beatstash:latest
+    # restart: always
+    volumes:
+      - ./config/consumer.conf:/etc/logstash/conf.d/consumer.conf
+    command: -f /etc/logstash/conf.d/consumer.conf
+    depends_on:
+      - elasticsearch
+
+  kibana:
+    image: kibana:5.5.1
+    ports:
+      - 5601:5601
+    depends_on:
+      - elasticsearch
