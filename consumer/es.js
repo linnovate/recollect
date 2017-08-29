@@ -7,8 +7,6 @@ const client = new elasticsearch.Client({
   host: ES_URL,
 });
 
-module.exports = { index }
-
 function index(doc, cb) {
   client.index({
     index: ES_INDEX,
@@ -16,3 +14,7 @@ function index(doc, cb) {
     body: doc
   }, cb)
 }
+
+module.exports = {
+  index
+};
