@@ -6,12 +6,34 @@ Recollect - collect operational insights using RabbitMQ and ElasticSearch
 npm install
 ```
 
-## Run
+## Configure
+Application is configured through environment variables (acording to [The 12-Factor App](https://12factor.net/config)) methodology.  
+Following envs are required
+
+Name            | Description              | Example Value
+:---            | :---                     | :---
+`PORT`          | App's http port          | 3000
+`RABBITMQ_URL`  | RabbitMQ url             | amqp://rabbitmq
+`QUEUE_NAME`    | RabbitMQ queue name      | event
+`ES_URL`        | ElasticSearch url        | http://elasticsearch
+`ES_INDEX`      | ElasticSearch index name | recollect
+
+You can store all those envs in a file, and then export all of them at once:
 ```bash
-npm start
+export $(cat config.env)
 ```
 
-Via docker-compose:
+## Run
+
+#### NPM
+```bash
+npm run api
+```
+```bash
+npm run consumer
+```
+
+#### docker-compose
 ```bash
 docker-compose up -d
 ```

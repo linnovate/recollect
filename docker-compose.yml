@@ -5,10 +5,36 @@ services:
     image: rabbitmq:management
     ports:
       - 15672:15672
+    restart: always
 
-  recollect:
+  elasticsearch:
+    image: elasticsearch:latest
+    restart: always
+
+  kibana:
+    image: kibana:latest
+    restart: always
+
+  api:
+    image: node:6
+    working_dir: /usr/src/app
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/usr/src/app
+    command: npm run api --silent
+    restart: always
+    depends_on:
+      - rabbitmq
+
+  consumer:
     image: node:6
     working_dir: /usr/src/app
     volumes:
       - .:/usr/src/app
-    command: npm start --silent
+    command: npm run consumer --silent
+    restart: always
+    depends_on:
+      - api
+      - rabbitmq
+      - elasticsearch

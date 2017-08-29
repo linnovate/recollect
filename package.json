@@ -1,10 +1,12 @@
 {
   "name": "recollect",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Recollect - collect operational insights using RabbitMQ and ElasticSearch",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "api": "node api",
+    "consumer": "node consumer"
   },
   "repository": {
     "type": "git",
@@ -15,5 +17,12 @@
   "bugs": {
     "url": "https://github.com/linnovate/recollect/issues"
   },
-  "homepage": "https://github.com/linnovate/recollect#readme"
+  "homepage": "https://github.com/linnovate/recollect#readme",
+  "dependencies": {
+    "amqplib": "^0.5.1",
+    "body-parser": "^1.17.2",
+    "elasticsearch": "^13.3.1",
+    "express": "^4.15.4",
+    "request": "^2.81.0"
+  }
 }
