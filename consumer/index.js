@@ -11,7 +11,7 @@ amqp.connect(RABBITMQ_URL, function (err, conn) {
     ch.consume(QUEUE_NAME, function (msg) {
       var content = msg.content.toString();
       es.index(content, (err, response) => {
-        if (err) ch.nack(msg);
+        if (err) return ch.nack(msg);
         ch.ack(msg)
       })
     })
