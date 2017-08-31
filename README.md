@@ -27,6 +27,9 @@ export $(cat config.env)
 
 #### NPM
 ```bash
+npm run build
+```
+```bash
 npm run api
 ```
 ```bash
