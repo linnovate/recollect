@@ -1,8 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const queue = require('./queue');
-
 const PORT = process.env.PORT;
+
+import queue from './queue';
 
 const app = express();
 app.use(bodyParser.json());
@@ -16,7 +16,7 @@ app.post('/api/create', (req, res) => {
 
   // validate message ...
 
-  queue(new Buffer(JSON.stringify(msg)), (err, ok) => {
+  queue(msg, (err) => {
     if (err) return res.sendStatus(500);
     res.sendStatus(200);
   });
