@@ -1,17 +1,14 @@
-const RABBITMQ_URL = process.env.RABBITMQ_URL;
-const QUEUE_NAME = process.env.QUEUE_NAME;
-
 import {
   connect,
-  produce
+  produce,
 } from '../providers/rabbitmq';
 
 connect().then((err) => {
   if (err) throw err;
 });
 
-export default function (msg, cb) {
-  produce(QUEUE_NAME, msg).then((data) => {
+export default function (qname, msg, cb) {
+  produce(qname, msg).then((data) => {
     cb(null);
   }).catch((err) => {
     cb(err);

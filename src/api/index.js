@@ -1,27 +1,28 @@
+import queue from './queue';
+
 const express = require('express');
 const bodyParser = require('body-parser');
-const PORT = process.env.PORT;
 
-import queue from './queue';
+const PORT = process.env.PORT;
+const BASE_QUEUE_NAME = process.env.BASE_QUEUE_NAME;
 
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
-  extended: true
+  extended: true,
 }));
 
 app.post('/api/create', (req, res) => {
-
-  var msg = req.body;
+  const msg = req.body;
 
   // validate message ...
 
-  queue(msg, (err) => {
+  queue(`${BASE_QUEUE_NAME}-index`, msg, (err) => {
     if (err) return res.sendStatus(500);
-    res.sendStatus(200);
+    return res.sendStatus(200);
   });
 });
 
 app.listen(PORT, () => {
-  console.log('listening on *:' + PORT);
+  console.log(`listening on *:${PORT}`);
 });

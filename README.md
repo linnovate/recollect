@@ -10,13 +10,14 @@ npm install
 Application is configured through environment variables (acording to [The 12-Factor App](https://12factor.net/config)) methodology.  
 Following envs are required
 
-Name            | Description              | Example Value
-:---            | :---                     | :---
-`PORT`          | App's http port          | 3000
-`RABBITMQ_URL`  | RabbitMQ url             | amqp://rabbitmq
-`QUEUE_NAME`    | RabbitMQ queue name      | event
-`ES_URL`        | ElasticSearch url        | http://elasticsearch
-`ES_INDEX`      | ElasticSearch index name | recollect
+Name             | Description                  | Example Value
+:---             | :---                         | :---
+`PORT`           | App's http port              | 3000
+`RABBITMQ_URL`   | RabbitMQ url                 | amqp://rabbitmq
+`QUEUE_NAME`     | RabbitMQ queue name          | event
+`BASE_QUEUE_NAME`| RabbitMQ base queues names   | recollect
+`ES_URL`         | ElasticSearch url            | http://elasticsearch
+`ES_INDEX`       | ElasticSearch index name     | recollect
 
 You can store all those envs in a file, and then export all of them at once:
 ```bash

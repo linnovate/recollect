@@ -1,20 +1,25 @@
-const elasticsearch = require('elasticsearch');
+import {
+  consume,
+} from '../providers/rabbitmq';
 
-const ES_URL = process.env.ES_URL;
-const ES_INDEX = process.env.ES_INDEX;
+import {
+  produceByInfo,
+} from '../helpers/data';
 
-const client = new elasticsearch.Client({
-  host: ES_URL,
-});
+const es = require('../providers/es');
 
-function index(doc, cb) {
-  client.index({
-    index: ES_INDEX,
-    type: ES_INDEX,
-    body: doc
-  }, cb)
-}
+const BASE_QUEUE_NAME = process.env.BASE_QUEUE_NAME;
+
+const start = () => {
+  consume(`${BASE_QUEUE_NAME}-index`, (msg, error, done) => {
+    es.index(msg, (_err) => {
+      if (_err) return error();
+      done();
+      return produceByInfo(msg);
+    });
+  });
+};
 
 module.exports = {
-  index
+  start,
 };
