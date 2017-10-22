@@ -11,13 +11,14 @@ const start = () => {
       uri: msg.webhookUrl,
       method: 'POST',
       headers: {
-        'Content-Type': 'multipart/form-data',
+        'Content-Type': 'application/json',
       },
       form: msg,
     };
+
     request(options, (err, response, body) => {
-      if (!err && response.statusCode >= 200 && response.statusCode < 300 && body.length) return done();
-      return error();
+      // if (!err && response.statusCode >= 200 && response.statusCode < 300 && body.length) return done();
+      // return error();
     });
   });
 };

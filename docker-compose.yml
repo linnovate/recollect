@@ -7,25 +7,33 @@ services:
       - 15672:15672
     restart: always
 
+  kibana:
+    image: kibana:5.5.0
+    restart: always
+    ports:
+      - 5601:5601
+
   elasticsearch:
     image: elasticsearch:latest
     restart: always
-
-  kibana:
-    image: kibana:latest
-    restart: always
-
   api:
     image: node:6
     working_dir: /usr/src/app
     ports:
-      - 3000:3000
+      - 3005:3005
     volumes:
       - .:/usr/src/app
     command: npm run api --silent
     restart: always
     depends_on:
       - rabbitmq
+    environment:
+      - PORT=3005
+      - RABBITMQ_URL=amqp://rabbitmq
+      - QUEUE_NAME=recollect-index
+      - ES_URL=http://172.18.0.4:9200
+      - ES_INDEX=recollect-events
+      - BASE_QUEUE_NAME=recollect
 
   consumer:
     image: node:6
@@ -38,3 +46,10 @@ services:
       - api
       - rabbitmq
       - elasticsearch
+    environment:
+      - PORT=3005
+      - RABBITMQ_URL=amqp://rabbitmq
+      - QUEUE_NAME=recollect-index
+      - ES_URL=http://172.18.0.4:9200
+      - ES_INDEX=recollect-events
+      - BASE_QUEUE_NAME=recollect

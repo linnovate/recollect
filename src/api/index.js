@@ -6,7 +6,11 @@ const bodyParser = require('body-parser');
 const PORT = process.env.PORT;
 const BASE_QUEUE_NAME = process.env.BASE_QUEUE_NAME;
 
+var cors = require('cors')
+
 const app = express();
+
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: true,
