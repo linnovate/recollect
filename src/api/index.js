@@ -2,11 +2,10 @@ import queue from './queue';
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 const PORT = process.env.PORT;
 const BASE_QUEUE_NAME = process.env.BASE_QUEUE_NAME;
-
-var cors = require('cors')
 
 const app = express();
 

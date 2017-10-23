@@ -4,7 +4,7 @@ import {
 
 import {
   produceByInfo,
-} from '../helpers/data';
+} from '../helpers/ruleEngine';
 
 const es = require('../providers/es');
 
