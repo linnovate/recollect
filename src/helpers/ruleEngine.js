@@ -9,20 +9,27 @@ import {
   urlValidation,
 } from './utils';
 
-import rules from '../data/rules';
 
 const BASE_QUEUE_NAME = process.env.BASE_QUEUE_NAME;
-const R = new RuleEngine(rules);
+let R;
 
-const produceByInfo = (data) => {
+const produceByInfo = (data, rules) => {
+  if (!R) {
+    R = new RuleEngine(rules, {
+      ignoreFactChanges: true,
+    });
+    R.fromJSON(rules);
+  }
+
   const inputObject = {};
   inputObject.fact = data;
   inputObject.actions = [];
   inputObject.data = {};
   R.execute(inputObject, (result) => {
+    console.log('afetr execute rules ', result);
     const copy = cloneObj(data);
     result.actions.forEach((action) => {
-      switch (action) {
+      switch (action.name) {
         case 'webhook':
           if (!urlValidation(result.data.webhook)) break;
           copy.webhookUrl = result.data.webhook;
