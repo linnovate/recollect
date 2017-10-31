@@ -2,12 +2,13 @@ const amqp = require('amqplib/');
 
 const RABBITMQ_URL = process.env.RABBITMQ_URL;
 
-var MAX_RESEND_ATTEMPTS = process.env.RABBITMQ_MAX_RESEND_ATTEMPTS || 3;
-var FAILED_JOBS_QUEUE = process.env.FAILED_JOBS_QUEUE_NAME || 'FailedJobsQueue';
-var MAX_UNACKED_MESSAGES_AMOUNT = 1;
+const MAX_RESEND_ATTEMPTS = process.env.RABBITMQ_MAX_RESEND_ATTEMPTS || 3;
+const FAILED_JOBS_QUEUE = process.env.FAILED_JOBS_QUEUE_NAME || 'FailedJobsQueue';
+const MAX_UNACKED_MESSAGES_AMOUNT = 1;
 
-var events = require('events');
-var eventEmitter = new events.EventEmitter();
+const events = require('events');
+
+const eventEmitter = new events.EventEmitter();
 
 let connection;
 let channel;
@@ -47,14 +48,17 @@ function assertQueue(queueName) {
     durable: true,
     deadLetterExchange: '',
     deadLetterRoutingKey: queueName,
-    maxPriority: 100
+    maxPriority: 100,
   });
 }
 
 const connect = () =>
   // connect rabbitmq, then connect/create channel.
   amqp.connect(RABBITMQ_URL)
-    .then(createChannel);
+    .then(createChannel)
+    .catch((error) => {
+      throw error;
+    });
 
 // connecting to channel, attaching to appropriate queue and perform
 // user callback upon incoming messages.
@@ -77,7 +81,7 @@ const consume = (queueName, callback) => assertQueue(queueName)
 
       console.log(`Received message from queue ${queueName}`);
 
-      var currentTransmissionNum = 0;
+      let currentTransmissionNum = 0;
       if (msg.properties.headers['x-death']) {
         currentTransmissionNum = msg.properties.headers['x-death'][0].count;
       }
@@ -86,15 +90,15 @@ const consume = (queueName, callback) => assertQueue(queueName)
         console.log('Message exceeded resend attempts amount, passing to failed jobs queue...');
         // produce to failed jobs queue asynchrously then ack message from old queue
         produce(FAILED_JOBS_QUEUE, messageContent)
-          .then(function() {
+          .then(() => {
             channel.ack(msg);
             return Promise.resolve();
           });
       } else {
         // else, just send the message.
         // exponential backoff: calculate total sleep time in millis
-        var totalSleepMillis = Math.pow(2, currentTransmissionNum) * 1000;
-        setTimeout(function () {
+        const totalSleepMillis = Math.pow(2, currentTransmissionNum) * 1000;
+        setTimeout(() => {
           // invoke callback and pass an err & done method which acks the message
           callback(messageContent,
             () => {
@@ -106,7 +110,7 @@ const consume = (queueName, callback) => assertQueue(queueName)
               channel.ack(msg);
             });
         }, totalSleepMillis);
-      }      
+      }
     }, { noAck: false });
   }).catch((err) => {
     console.log(`Error in consuming from ${queueName} : err`);
@@ -133,11 +137,11 @@ const produce = (queueName, message, options) =>
 
 function deleteQueue(queueName) {
   return channel.deleteQueue(queueName)
-    .catch(function (err) {
+    .catch((err) => {
       console.log('Error in deleting queue %s', queueName);
       throw err;
     });
-};
+}
 
 
 export {
