@@ -12,7 +12,9 @@ const startConsuming = () => {
   webhooks.start();
 };
 
-connect().then((err) => {
-  if (err) throw err;
-  startConsuming();
-});
+setTimeout(() => {
+  connect().then((err) => {
+    if (err) throw err;
+    startConsuming();
+  });
+}, 60000);

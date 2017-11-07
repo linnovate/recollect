@@ -3,9 +3,12 @@ import {
   produce,
 } from '../providers/rabbitmq';
 
-connect().then((err) => {
-  if (err) throw err;
-});
+
+setTimeout(() => {
+  connect().then((err) => {
+    if (err) throw err;
+  });
+}, 60000);
 
 export default function (qname, msg, cb) {
   produce(qname, msg).then((data) => {

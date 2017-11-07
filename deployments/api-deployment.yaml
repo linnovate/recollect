@@ -1,0 +1,46 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.4.0 (c7964e7)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: api
+  name: api
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: api
+    spec:
+      containers:
+      - args:
+        - npm
+        - run
+        - api
+        - --silent
+        env:
+        - name: BASE_QUEUE_NAME
+          value: recollect
+        - name: ES_INDEX
+          value: recollect-events
+        - name: ES_URL
+          value: http://elasticsearch:9200
+        - name: PORT
+          value: "3005"
+        - name: QUEUE_NAME
+          value: recollect-index
+        - name: RABBITMQ_URL
+          value: amqp://rabbitmq
+        image: localhost:5000/recollect
+        name: api
+        ports:
+        - containerPort: 3005
+        resources: {}
+        workingDir: /usr/src/app
+      restartPolicy: Always
+status: {}
