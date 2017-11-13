@@ -5,6 +5,7 @@ services:
     image: rabbitmq:management
     ports:
       - 15672:15672
+      - 5672:5672
     restart: always
 
   elasticsearch:
@@ -18,12 +19,13 @@ services:
       - 5601:5601
 
   api:
-    image: node:6
+    image: localhost:5000/recollect
+    # image: recollect
+    # build:
+    #  context: .
     working_dir: /usr/src/app
     ports:
       - 3005:3005
-    volumes:
-      - .:/usr/src/app
     command: npm run api --silent
     restart: always
     depends_on:
@@ -36,10 +38,11 @@ services:
       - ES_INDEX=recollect-events
       - BASE_QUEUE_NAME=recollect
   consumer:
-    image: node:6
+    image: localhost:5000/recollect
+    # image: recollect
+    # build:
+    #  context: .
     working_dir: /usr/src/app
-    volumes:
-      - .:/usr/src/app
     command: npm run consumer --silent
     restart: always
     depends_on:

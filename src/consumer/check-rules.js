@@ -16,7 +16,6 @@ let rules;
 let R;
 
 const getRules = () => new Promise((resolve, reject) => {
-  if (rules) return resolve(rules);
   request(RULES_API, (error, response, body) => {
     if (error || response.statusCode !== 200) return reject(error);
     const Rl = new RuleEngine(JSON.parse(body));
@@ -25,14 +24,22 @@ const getRules = () => new Promise((resolve, reject) => {
   });
 });
 
+setInterval(() => {
+  getRules().then((_rules) => {
+    console.log('########## UPDATE RULES ##################');
+    R = new RuleEngine(_rules, {
+      ignoreFactChanges: true,
+    });
+    R.fromJSON(rules);
+  });
+}, 30000);
+
 const start = () => {
   getRules().then((_rules) => {
-    if (!R) {
-      R = new RuleEngine(_rules, {
-        ignoreFactChanges: true,
-      });
-      R.fromJSON(rules);
-    }
+    R = new RuleEngine(_rules, {
+      ignoreFactChanges: true,
+    });
+    R.fromJSON(rules);
     consume(`${BASE_QUEUE_NAME}-check-rules`, (msg, error, done) => {
       const inputObject = {};
       inputObject.fact = msg;
