@@ -8,5 +8,5 @@ ENV ES_URL=http://elasticsearch:9200
 ENV ES_INDEX=recollect-events
 ENV BASE_QUEUE_NAME=recollect
 ENV RULES_API=http://rules-api:4040/api/rules
-#RUN npm install
+RUN npm install
 EXPOSE 3005
