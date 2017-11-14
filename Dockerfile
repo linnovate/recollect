@@ -9,4 +9,5 @@ ENV ES_INDEX=recollect-events
 ENV BASE_QUEUE_NAME=recollect
 ENV RULES_API=http://rules-api:4040/api/rules
 RUN npm install
+RUN npm run build
 EXPOSE 3005

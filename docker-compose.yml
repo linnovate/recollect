@@ -56,6 +56,4 @@ services:
       - ES_URL=http://elasticsearch:9200
       - ES_INDEX=recollect-events
       - BASE_QUEUE_NAME=recollect
-      - RULES_API=http://ruleshost:4040/api/rules
-    extra_hosts:
-      - "ruleshost:10.1.0.48"
+      - RULES_API=http://rules-api:4040/api/rules
