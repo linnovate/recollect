@@ -14,7 +14,7 @@ const start = () => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: msg,
+      body: JSON.stringify(msg),
     };
 
     request(options, (err, response, body) => {
