@@ -17,6 +17,7 @@ app.use(bodyParser.urlencoded({
 
 app.post('/api/create', (req, res) => {
   const msg = req.body;
+  msg.created = new Date();
 
   // validate message ...
 
