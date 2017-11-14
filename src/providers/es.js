@@ -10,7 +10,7 @@ const client = new elasticsearch.Client({
 const index = (doc, cb) => {
   client.index({
     index: ES_INDEX,
-    type: ES_INDEX,
+    type: doc.type || ES_INDEX,
     body: doc,
   }, cb);
 };
