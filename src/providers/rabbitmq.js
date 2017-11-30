@@ -89,7 +89,7 @@ const consume = (queueName, callback) => assertQueue(queueName)
       if (currentTransmissionNum > MAX_RESEND_ATTEMPTS) {
         console.log('Message exceeded resend attempts amount, passing to failed jobs queue...');
         // produce to failed jobs queue asynchrously then ack message from old queue
-        produce(FAILED_JOBS_QUEUE, messageContent)
+        produce(`${FAILED_JOBS_QUEUE}-${queueName}`, messageContent)
           .then(() => {
             channel.ack(msg);
             return Promise.resolve();
@@ -103,7 +103,7 @@ const consume = (queueName, callback) => assertQueue(queueName)
           callback(messageContent,
             () => {
               // negative-acks the message
-              channel.nack(msg);
+              channel.nack(msg, false, false);
             },
             () => {
               // acks the message
