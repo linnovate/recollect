@@ -51,6 +51,7 @@ const start = () => {
             case 'webhook':
               if (!urlValidation(action.data.url)) break;
               msg.webhookUrl = action.data.url;
+              msg.webhookMethod = action.data.method || 'POST';
               produce(`${BASE_QUEUE_NAME}-webhook`, msg);
               break;
             default:

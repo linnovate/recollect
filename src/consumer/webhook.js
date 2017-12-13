@@ -10,7 +10,7 @@ const start = () => {
     console.log('message from webhook queue', msg);
     const options = {
       uri: msg.webhookUrl,
-      method: 'POST',
+      method: msg.webhookMethod,
       headers: {
         'Content-Type': 'application/json',
       },
