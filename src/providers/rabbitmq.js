@@ -5,6 +5,7 @@ const RABBITMQ_URL = process.env.RABBITMQ_URL;
 const MAX_RESEND_ATTEMPTS = process.env.RABBITMQ_MAX_RESEND_ATTEMPTS || 3;
 const FAILED_JOBS_QUEUE = process.env.FAILED_JOBS_QUEUE_NAME || 'FailedJobsQueue';
 const MAX_UNACKED_MESSAGES_AMOUNT = 1;
+const BASE_QUEUE_NAME = process.env.BASE_QUEUE_NAME;
 
 const events = require('events');
 
@@ -31,6 +32,7 @@ function onChannelError(err) {
 }
 
 
+
 function createChannel(conn) {
   connection = conn;
   return connection.createConfirmChannel()
@@ -38,6 +40,12 @@ function createChannel(conn) {
       channel = ch;
       channel.on('close', onChannelClose);
       channel.on('error', onChannelError);
+      channel.assertExchange('my-delay-exchange', "x-delayed-message", {autoDelete: false, durable: true, passive: true,  arguments: {'x-delayed-type':  "direct"}})
+        .then((q) => {
+          assertQueue(`${BASE_QUEUE_NAME}-delay`);
+        }).then((q) => {
+          bindQueue(`${BASE_QUEUE_NAME}-delay`)
+        })
       console.log('Connected to RabbitMQ.');
     });
 }
@@ -50,6 +58,10 @@ function assertQueue(queueName) {
     deadLetterRoutingKey: queueName,
     maxPriority: 100,
   });
+}
+
+function bindQueue(queueName) {
+  return channel.bindQueue(queueName, 'my-delay-exchange', queueName);
 }
 
 const connect = () =>
@@ -68,7 +80,6 @@ const connect = () =>
 const consume = (queueName, callback) => assertQueue(queueName)
   .then((ok) => {
     console.log(`Attached to queue: ${queueName}`);
-
     channel.prefetch(MAX_UNACKED_MESSAGES_AMOUNT, false);
 
     return channel.consume(queueName, (msg) => {
@@ -121,6 +132,7 @@ const consume = (queueName, callback) => assertQueue(queueName)
 // this method does not return anything no purpose;
 // the client has nothing to do with such failures, the message jus't won't be sent
 // and a log will be emitted.
+
 const produce = (queueName, message, options) =>
   // create queue if not exists
   assertQueue(queueName)
@@ -128,7 +140,11 @@ const produce = (queueName, message, options) =>
       console.log(`Sending message to queue ${queueName}`);
       options = options || {};
       options.persistent = true;
-      return channel.sendToQueue(queueName, new Buffer(JSON.stringify(message)), options);
+      if (options.delay) {
+        options.headers = options.headers || {};
+        options.headers['x-delay'] = options.delay
+        return channel.publish('my-delay-exchange', queueName, new Buffer(JSON.stringify(message)), options);
+      } else return channel.sendToQueue(queueName, new Buffer(JSON.stringify(message)), options);
     })
     .catch((err) => {
       console.log(`Error in producing from ${queueName} : err`);
