@@ -3,6 +3,9 @@ import {
 } from '../providers/rabbitmq';
 
 import * as webhooks from './webhook';
+import * as delay from './delay';
+import * as searchElastic from './searchElastic';
+import * as email from './email';
 import * as es from './es';
 import * as checkRules from './check-rules';
 
@@ -10,6 +13,9 @@ const startConsuming = () => {
   es.start();
   checkRules.start();
   webhooks.start();
+  delay.start();
+  searchElastic.start();
+  email.start()
 };
 
 setTimeout(() => {
@@ -17,4 +23,4 @@ setTimeout(() => {
     if (err) throw err;
     startConsuming();
   });
-}, 60000);
+}, 0);

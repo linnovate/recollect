@@ -12,8 +12,8 @@ const start = () => {
   consume(`${BASE_QUEUE_NAME}-index`, (msg, error, done) => {
     es.index(msg, (_err) => {
       if (_err) return error();
-      done();
       produce(`${BASE_QUEUE_NAME}-check-rules`, msg);
+      done();
     });
   });
 };

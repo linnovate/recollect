@@ -8,7 +8,7 @@ setTimeout(() => {
   connect().then((err) => {
     if (err) throw err;
   });
-}, 60000);
+}, 0);
 
 export default function (qname, msg, cb) {
   produce(qname, msg).then((data) => {

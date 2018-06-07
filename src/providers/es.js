@@ -15,6 +15,19 @@ const index = (doc, cb) => {
   }, cb);
 };
 
+const search = (doc) => {
+  return client.search({
+    index: ES_INDEX,
+    type: doc.type || ES_INDEX,
+    body: doc.query
+  }).then((resp) => {
+    return resp.hits.hits
+  }, (err) => {
+    return err
+  });
+}
+
 module.exports = {
   index,
+  search
 };

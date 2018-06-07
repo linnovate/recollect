@@ -31,8 +31,10 @@ setInterval(() => {
       ignoreFactChanges: true,
     });
     R.fromJSON(rules);
-  });
-}, 30000);
+  })
+  .catch((err) => {
+  })
+}, 50000);
 
 const start = () => {
   getRules().then((_rules) => {
@@ -53,6 +55,13 @@ const start = () => {
               msg.webhookUrl = action.data.url;
               msg.webhookMethod = action.data.method || 'POST';
               produce(`${BASE_QUEUE_NAME}-webhook`, msg);
+              break;
+            case 'delay':
+              msg.waitFor = action.data.waitFor;
+              msg.afterDelay = action.data.afterDelay;
+              const delay = parseInt(action.data.time) * 60000;
+              console.log('ssss', delay)
+              produce(`${BASE_QUEUE_NAME}-delay`, msg, {delay});
               break;
             default:
               break;

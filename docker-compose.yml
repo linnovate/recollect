@@ -2,7 +2,7 @@ version: '3'
 
 services:
   rabbitmq:
-    image: rabbitmq:management
+    image: rabbitmq:3.6.15-management
     ports:
       - 15672:15672
       - 5672:5672
@@ -13,16 +13,17 @@ services:
     restart: always
 
   kibana:
-    image: kibana:5.5.0
+    image: kibana:latest
     restart: always
     ports:
       - 5601:5601
 
   api:
-    image: localhost:5000/recollect
-    # image: recollect
-    # build:
-    #  context: .
+    image: recollect
+    build:
+     context: .
+    volumes:
+      - ".:/usr/src/app"
     working_dir: /usr/src/app
     ports:
       - 3005:3005
@@ -38,10 +39,11 @@ services:
       - ES_INDEX=recollect-events
       - BASE_QUEUE_NAME=recollect
   consumer:
-    image: localhost:5000/recollect
-    # image: recollect
-    # build:
-    #  context: .
+    image: recollect
+    build:
+     context: .
+    volumes:
+      - ".:/usr/src/app"
     working_dir: /usr/src/app
     command: npm run consumer --silent
     restart: always
@@ -57,3 +59,8 @@ services:
       - ES_INDEX=recollect-events
       - BASE_QUEUE_NAME=recollect
       - RULES_API=http://rules-api:4040/api/rules
+      - MAIL_SERVICE=office365
+      - MAIL_HOST=smtp.office365.com
+      - MAIL_PORT=587
+      - MAIL_AUTH_USER=booking@danhotels.onmicrosoft.com
+      - MAIL_AUTH_PASSWORD=Linn3933
