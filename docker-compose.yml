@@ -32,7 +32,7 @@ services:
     depends_on:
       - rabbitmq
     environment:
-      - PORT=3005
+      - APP_PORT=3005
       - RABBITMQ_URL=amqp://rabbitmq
       - QUEUE_NAME=recollect-index
       - ES_URL=http://elasticsearch:9200
@@ -52,7 +52,7 @@ services:
       - rabbitmq
       - elasticsearch
     environment:
-      - PORT=3005
+      - APP_PORT=3005
       - RABBITMQ_URL=amqp://rabbitmq
       - QUEUE_NAME=recollect-index
       - ES_URL=http://elasticsearch:9200

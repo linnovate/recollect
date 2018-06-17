@@ -40,6 +40,7 @@ function createChannel(conn) {
       channel = ch;
       channel.on('close', onChannelClose);
       channel.on('error', onChannelError);
+      console.log('in')
       channel.assertExchange('my-delay-exchange', "x-delayed-message", {autoDelete: false, durable: true, passive: true,  arguments: {'x-delayed-type':  "direct"}})
         .then((q) => {
           assertQueue(`${BASE_QUEUE_NAME}-delay`);

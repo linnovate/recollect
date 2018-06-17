@@ -1,12 +1,23 @@
-import queue from './queue';
+import './env';
+import queue from './api/queue';
+import {
+  connect,
+} from './providers/rabbitmq';
+
+import * as webhooks from './consumer/webhook';
+import * as delay from './consumer/delay';
+import * as searchElastic from './consumer/searchElastic';
+import * as email from './consumer/email';
+import * as es from './consumer/es';
+import * as checkRules from './consumer/check-rules';
 
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
 const PORT = process.env.APP_PORT;
-console.log('11111', process.env)
 const BASE_QUEUE_NAME = process.env.BASE_QUEUE_NAME;
+
 
 const app = express();
 
@@ -19,8 +30,22 @@ app.use(bodyParser.urlencoded({
   extended: true,
 }));
 
+const startConsuming = () => {
+  es.start();
+  checkRules.start();
+  webhooks.start();
+  delay.start();
+  searchElastic.start();
+  email.start()
+};
+
+setTimeout(() => {
+  connect().then((err) => {
+    if (err) throw err;
+    startConsuming();
+  });
+}, 0);
 app.post('/api/create', (req, res) => {
-  console.log('iiiiiiiiiiiii', req.body)
   const msg = req.body;
   msg.created = new Date();
 
