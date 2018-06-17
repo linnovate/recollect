@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "api": "node dist/api",
     "consumer": "node dist/consumer",
-    "build": "babel src --presets node6 --out-dir dist"
+    "build": "babel src --presets node6 --out-dir dist",
+    "start": "nodemon --watch .env --watch src --exec babel-node src --source-maps"
   },
   "repository": {
     "type": "git",
@@ -23,6 +24,7 @@
     "amqplib": "^0.5.2",
     "body-parser": "^1.18.3",
     "cors": "^2.8.4",
+    "dotenv": "^6.0.0",
     "elasticsearch": "^13.3.1",
     "express": "^4.16.3",
     "node-rules": "^3.2.0",
@@ -42,6 +44,9 @@
     "babel-preset-node6": "^11.0.0",
     "babel-preset-stage-0": "^6.24.1",
     "eslint": "^4.19.1",
+    "babel-preset-env": "^1.7.0",
+    "babel-register": "^6.26.0",
+    "eslint": "^4.6.0",
     "eslint-config-airbnb": "^15.1.0",
     "eslint-config-standard": "^10.2.1",
     "eslint-plugin-import": "^2.13.0",
@@ -50,6 +55,12 @@
     "eslint-plugin-promise": "^3.8.0",
     "eslint-plugin-react": "^7.10.0",
     "eslint-plugin-standard": "^3.1.0",
-    "jsx-ast-utils": "^2.0.1"
+    "jsx-ast-utils": "^2.0.1",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-node": "^5.1.1",
+    "eslint-plugin-react": "^7.3.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "jsx-ast-utils": "^2.0.1",
+    "nodemon": "^1.17.5"
   }
 }

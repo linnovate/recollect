@@ -16,3 +16,11 @@ ENV MAIL_AUTH_PASSWORD=
 RUN npm install
 RUN npm run build
 EXPOSE 3005
+WORKDIR /app
+COPY . /app/
+RUN npm install
+ADD wait-for-it.sh /wait-for-it.sh
+RUN chmod +x /wait-for-it.sh
+
+ENTRYPOINT ["/wait-for-it.sh", "rabbitmq:5672", "--"]
+CMD ["npm run start:dev"]
