@@ -4,8 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
-const PORT = process.env.APP_PORT;
-console.log('11111', process.env)
+const PORT = process.env.PORT;
 const BASE_QUEUE_NAME = process.env.BASE_QUEUE_NAME;
 
 const app = express();
@@ -20,7 +19,7 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.post('/api/create', (req, res) => {
-  console.log('iiiiiiiiiiiii', req.body)
+ console.log('request body: ', req.body)
   const msg = req.body;
   msg.created = new Date();
 

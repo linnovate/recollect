@@ -12,7 +12,7 @@ Following envs are required
 
 Name             | Description                  | Example Value
 :---             | :---                         | :---
-`APP_PORT`           | App's http port              | 3000
+`APP_PORT`       | App's http port              | 3000
 `RABBITMQ_URL`   | RabbitMQ url                 | amqp://rabbitmq
 `QUEUE_NAME`     | RabbitMQ queue name          | event
 `BASE_QUEUE_NAME`| RabbitMQ base queues names   | recollect
