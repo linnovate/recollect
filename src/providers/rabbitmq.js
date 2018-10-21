@@ -1,7 +1,6 @@
 const amqp = require('amqplib/');
 
 const RABBITMQ_URL = process.env.RABBITMQ_URL;
-
 const MAX_RESEND_ATTEMPTS = process.env.RABBITMQ_MAX_RESEND_ATTEMPTS || 3;
 const FAILED_JOBS_QUEUE = process.env.FAILED_JOBS_QUEUE_NAME || 'FailedJobsQueue';
 const MAX_UNACKED_MESSAGES_AMOUNT = 1;
@@ -65,13 +64,14 @@ function bindQueue(queueName) {
   return channel.bindQueue(queueName, 'my-delay-exchange', queueName);
 }
 
-const connect = () =>
+const connect = () => {
   // connect rabbitmq, then connect/create channel.
-  amqp.connect(RABBITMQ_URL)
+  console.log('connecting to ', RABBITMQ_URL, '...');
+  return amqp.connect(RABBITMQ_URL)
     .then(createChannel)
     .catch((error) => {
       throw error;
-    });
+    })};
 
 // connecting to channel, attaching to appropriate queue and perform
 // user callback upon incoming messages.
