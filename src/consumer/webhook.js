@@ -11,14 +11,14 @@ const start = () => {
     const options = {
       uri: msg.webhookUrl,
       method: msg.webhookMethod,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(msg),
+      json: msg,
     };
 
+  console.log('options: ', options);
     request(options, (err, response, body) => {
-      console.log(err, body);
+      console.log('response: ');
+      if(err) console.log('err: ', err);
+      else console.log('body: ', body);
       return done();
       // if (!err && response.statusCode >= 200 && response.statusCode < 300 && body.length) return done();
       // return error();
@@ -29,3 +29,4 @@ const start = () => {
 module.exports = {
   start,
 };
+
