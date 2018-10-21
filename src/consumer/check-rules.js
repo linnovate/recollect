@@ -43,10 +43,12 @@ const start = () => {
     });
     R.fromJSON(rules);
     consume(`${BASE_QUEUE_NAME}-check-rules`, (msg, error, done) => {
+      console.log('msg: ', msg);
       const inputObject = {};
       inputObject.fact = msg;
       inputObject.actions = [];
       inputObject.data = {};
+      console.log('input object: ', inputObject);
       R.execute(inputObject, (result) => {
         result.actions.forEach((action) => {
           switch (action.name) {

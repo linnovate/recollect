@@ -92,7 +92,7 @@ const consume = (queueName, callback) => assertQueue(queueName)
       const messageContent = JSON.parse(msg.content.toString());
 
       console.log(`Received message from queue ${queueName}`);
-
+      console.log('message: ', messageContent);
       let currentTransmissionNum = 0;
       if (msg.properties.headers['x-death']) {
         currentTransmissionNum = msg.properties.headers['x-death'][0].count;
