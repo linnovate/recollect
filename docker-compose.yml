@@ -9,19 +9,17 @@ services:
     restart: always
 
   elasticsearch:
-    image: elasticsearch:latest
+    image: elasticsearch:5.6
     restart: always
 
   kibana:
-    image: kibana:latest
+    image: kibana:6.5.1
     restart: always
     ports:
       - 5601:5601
 
   api:
-    image: recollect
-    build:
-     context: .
+    build: utils/docker/recollect
     volumes:
       - ".:/usr/src/app"
     working_dir: /usr/src/app
@@ -39,9 +37,7 @@ services:
       - ES_INDEX=recollect-events
       - BASE_QUEUE_NAME=recollect
   consumer:
-    image: recollect
-    build:
-     context: .
+    build: utils/docker/recollect
     volumes:
       - ".:/usr/src/app"
     working_dir: /usr/src/app
@@ -59,8 +55,3 @@ services:
       - ES_INDEX=recollect-events
       - BASE_QUEUE_NAME=recollect
       - RULES_API=http://rules-api:4040/api/rules
-      - MAIL_SERVICE=office365
-      - MAIL_HOST=smtp.office365.com
-      - MAIL_PORT=587
-      - MAIL_AUTH_USER=booking@danhotels.onmicrosoft.com
-      - MAIL_AUTH_PASSWORD=Linn3933
