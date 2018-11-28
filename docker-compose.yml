@@ -44,9 +44,12 @@ services:
   consumer:
     build: utils/docker/recollect
     volumes:
-      - ".:/usr/src/app"
-    working_dir: /usr/src/app
-    command: npm run consumer --silent
+      - "./src:/app/src"
+    working_dir: /app
+    command: |
+      /bin/bash -c "
+        npm run build
+        npm run consumer"
     restart: always
     depends_on:
       - api
@@ -54,9 +57,9 @@ services:
       - elasticsearch
     environment:
       - APP_PORT=3005
-      - RABBITMQ_URL=amqp://rabbitmq
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
       - QUEUE_NAME=recollect-index
       - ES_URL=http://elasticsearch:9200
       - ES_INDEX=recollect-events
       - BASE_QUEUE_NAME=recollect
-      - RULES_API=http://rules-api:4040/api/rules
+      - RULES_API=http://localhost:3002/api/rules
