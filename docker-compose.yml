@@ -3,6 +3,7 @@ version: '3'
 services:
   rabbitmq:
     image: rabbitmq:3.6.15-management
+    build: utils/docker/rabbitmq
     ports:
       - 15672:15672
       - 5672:5672
@@ -21,17 +22,21 @@ services:
   api:
     build: utils/docker/recollect
     volumes:
-      - ".:/usr/src/app"
-    working_dir: /usr/src/app
+      - "./src:/app/src"
+    working_dir: /app
     ports:
       - 3005:3005
-    command: npm run api --silent
+    command: |
+      /bin/bash -c "
+        npm run build
+        npm run api"
     restart: always
     depends_on:
       - rabbitmq
     environment:
+      - PORT=3005
       - APP_PORT=3005
-      - RABBITMQ_URL=amqp://rabbitmq
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
       - QUEUE_NAME=recollect-index
       - ES_URL=http://elasticsearch:9200
       - ES_INDEX=recollect-events

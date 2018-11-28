@@ -15,7 +15,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
-const PORT = process.env.APP_PORT;
+const APP_PORT = process.env.APP_PORT;
 const BASE_QUEUE_NAME = process.env.BASE_QUEUE_NAME;
 
 
@@ -57,6 +57,6 @@ app.post('/api/create', (req, res) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`listening on *:${PORT}`);
+app.listen(APP_PORT, () => {
+  console.log(`listening on *:${APP_PORT}`);
 });
