@@ -41,3 +41,8 @@ npm run consumer
 ```bash
 docker-compose up -d
 ```
+## Related resources
+
+- [root](https://github.com/linnovate/root) - Fullstack js operational 
+- [reroute-ui](https://github.com/linnovate/reroute-ui) - UI to manage the rules
+- [recollect helm](https://github.com/linnovate/reopen/tree/master/charts/recollect) - cloud native helm
