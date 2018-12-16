@@ -17,7 +17,10 @@ let R;
 
 const getRules = () => new Promise((resolve, reject) => {
   request(RULES_API, (error, response, body) => {
-    if (error || response.statusCode !== 200) return reject(error);
+    if (error)
+      return reject(error);
+    if (response.statusCode !== 200)
+      return reject(body);
     const Rl = new RuleEngine(JSON.parse(body));
     rules = Rl.toJSON();
     resolve(rules);
@@ -32,8 +35,8 @@ setInterval(() => {
     });
     R.fromJSON(rules);
   })
-  .catch((err) => {
-  })
+    .catch((err) => {
+    })
 }, 50000);
 
 const start = () => {
@@ -49,28 +52,12 @@ const start = () => {
       inputObject.actions = [];
       inputObject.data = {};
       console.log('input object: ', inputObject);
-      R.execute(inputObject, (result) => {
-        result.actions.forEach((action) => {
-          switch (action.name) {
-            case 'webhook':
-              if (!urlValidation(action.data.url)) break;
-              msg.webhookUrl = action.data.url;
-              msg.webhookMethod = action.data.method || 'POST';
-              produce(`${BASE_QUEUE_NAME}-webhook`, msg);
-              break;
-            case 'delay':
-              msg.waitFor = action.data.waitFor;
-              msg.afterDelay = action.data.afterDelay;
-              const delay = parseInt(action.data.time) * 60000;
-              console.log('ssss', delay)
-              produce(`${BASE_QUEUE_NAME}-delay`, msg, {delay});
-              break;
-            default:
-              break;
-          }
-        });
+      try {
+        executeRule(inputObject, msg, done);
+      } catch (err) {
+        console.error(err);
         done();
-      });
+      }
     });
   }).catch((err) => {
     console.error(err);
@@ -80,3 +67,28 @@ const start = () => {
 module.exports = {
   start,
 };
+
+function executeRule(inputObject, msg, done) {
+  R.execute(inputObject, (result) => {
+    result.actions.forEach((action) => {
+      switch (action.name) {
+        case 'webhook':
+          if (!urlValidation(action.data.url)) break;
+          msg.webhookUrl = action.data.url;
+          msg.webhookMethod = action.data.method || 'POST';
+          produce(`${BASE_QUEUE_NAME}-webhook`, msg);
+          break;
+        case 'delay':
+          msg.waitFor = action.data.waitFor;
+          msg.afterDelay = action.data.afterDelay;
+          const delay = parseInt(action.data.time) * 60000;
+          console.log('ssss', delay)
+          produce(`${BASE_QUEUE_NAME}-delay`, msg, { delay });
+          break;
+        default:
+          break;
+      }
+    });
+    done();
+  });
+}
