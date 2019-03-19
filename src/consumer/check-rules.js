@@ -69,7 +69,10 @@ module.exports = {
 };
 
 function executeRule(inputObject, msg, done) {
+  console.log('executing rule');
   R.execute(inputObject, (result) => {
+    console.log('done');
+    console.log('result: ', result);
     result.actions.forEach((action) => {
       switch (action.name) {
         case 'webhook':
