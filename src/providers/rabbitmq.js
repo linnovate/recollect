@@ -134,9 +134,10 @@ const consume = (queueName, callback) => assertQueue(queueName)
 // the client has nothing to do with such failures, the message jus't won't be sent
 // and a log will be emitted.
 
-const produce = (queueName, message, options) =>
+const produce = (queueName, message, options) => {
+  message = JSON.parse(JSON.stringify(message));
   // create queue if not exists
-  assertQueue(queueName)
+  return assertQueue(queueName)
     .then((ok) => {
       console.log(`Sending message to queue ${queueName}`);
       options = options || {};
@@ -151,6 +152,7 @@ const produce = (queueName, message, options) =>
       console.log(`Error in producing from ${queueName} : err`);
       throw err;
     });
+}
 
 function deleteQueue(queueName) {
   return channel.deleteQueue(queueName)
