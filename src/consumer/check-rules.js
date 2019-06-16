@@ -72,7 +72,8 @@ function executeRule(inputObject, msg, done) {
   console.log('executing rule');
   R.execute(inputObject, (result) => {
     console.log('done');
-    console.log('result: ', result);
+    console.log('result: ')
+    console.log(require('util').inspect(result, {showHidden: false, depth: null}));
     result.actions.forEach((action) => {
       switch (action.name) {
         case 'webhook':
